@@ -1,0 +1,19 @@
+﻿@model BlogProject.Entity.Concrete.Message2
+@{
+    ViewData["Title"] = "MessageDetails";
+    Layout = "~/Views/Shared/_WriterLayout.cshtml";
+}
+
+<h1>Mesaj Detayları</h1>
+<br />
+@Html.HiddenFor(x=>x.MessageID)
+<br />
+@Html.Label("Mesaj Başlığı")
+@Html.TextBoxFor(x=>x.Subject,new { @class = "form-control" })
+<br />
+@Html.Label("Mesaj İçeriği")
+@Html.TextAreaFor(x => x.MessageDetails, 20, 3, new {@class="form-control",disabled="disabled"})
+<br />
+<a href="/Message/Inbox" class="btn btn-success">Mesajlara Dön</a>
+
+

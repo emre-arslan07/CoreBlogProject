@@ -1,0 +1,72 @@
+﻿@using BlogProject.Entity.Concrete
+@model List<Blog>
+@{
+    ViewData["Title"] = "BlogListByWriter";
+    Layout = "~/Views/Shared/_WriterLayout.cshtml";
+}
+
+<h1>Yazarın Blogları</h1>
+<table class="table table-bordered">
+    <tr>
+        <th>#</th>
+        <th>Blog Başlığı</th>
+        <th>Oluşturma Tarihi</th>
+        <th>Kategori</th>
+        <th>Durum</th>
+        <th>Sil</th>
+        <th>Düzenle</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+<tr>
+    <td>@item.BlogID</td>
+    <td>@item.BlogTitle</td>
+    <td>@(((DateTime)item.BlogCreateDate).ToString("dd/MMM/yyy"))</td>
+    <td>@item.Category.CategoryName</td>
+    @if (item.BlogStatus == true)
+    {
+        <td><span class="badge badge-success">Aktif</span></td>
+    }
+    else
+    {
+        <td><span class="badge badge-dark">Pasif</span></td>
+    }
+
+    <td><a href="/Blog/DeleteBlog/@item.BlogID" class="btn btn-danger Delete">Sil</a></td>
+    <td><a href="/Blog/UpdateBlog/@item.BlogID" class="btn btn-warning">Güncelle</a></td>
+   
+</tr>
+    }
+</table>
+<a href="/Blog/BlogAdd" class="btn btn-primary">Yeni Blog Oluştur</a>
+<script>
+        $('.Delete').click(function (e) {
+            e.preventDefault();
+            var linkURL = $(this).attr("href");
+            Swal.fire({
+                title: 'UYARI!',
+                text: "Blog yazısını silmek istediğinize emin misiniz?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#5CBA6C',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Evet',
+                cancelButtonText: 'Hayır'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = linkURL;
+                    Swal.fire(
+                        'Başarılı!',
+                        'Seçilen Blog Silindi .',
+                        'success'
+                    )
+                }
+                else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.fire({
+                        icon: 'info',
+                        text: 'Silme işlemi yapılmadı'
+                    });
+                }
+            })
+        });
+</script>

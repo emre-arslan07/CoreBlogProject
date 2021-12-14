@@ -1,0 +1,30 @@
+﻿@model BlogProject.Entity.Concrete.Blog
+@{
+    ViewData["Title"] = "UpdateBlog";
+    Layout = "~/Views/Shared/_WriterLayout.cshtml";
+}
+
+<h1>Blog Güncelleme Sayfası</h1>
+
+@using (Html.BeginForm("UpdateBlog", "Blog", FormMethod.Post))
+{
+    @Html.HiddenFor(x => x.BlogID)
+    <br />
+    @Html.Label("Blog Başlık")
+    @Html.TextBoxFor(x => x.BlogTitle, new { @class = "form-control" })
+    <br />
+    @Html.Label("Blog Thumbnail Url")
+    @Html.TextBoxFor(x => x.BlogThumbnailImage, new { @class = "form-control" })
+    <br />
+    @Html.Label("Blog Görsel")
+    @Html.TextBoxFor(x => x.BlogImage, new { @class = "form-control" })
+    <br />
+    @Html.Label("Blog Kategori")
+    @Html.DropDownListFor(x => x.CategoryID,(List<SelectListItem>)ViewBag.cat, new { @class = "form-control" })
+    <br />
+    @Html.Label("Blog İçeril")
+    @Html.TextAreaFor(x => x.BlogContent,10,3, new { @class = "form-control" })
+    <br />
+    <button class="btn btn-success">Güncelle</button>
+}
+

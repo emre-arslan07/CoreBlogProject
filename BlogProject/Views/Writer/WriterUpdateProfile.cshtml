@@ -1,0 +1,64 @@
+﻿@model BlogProject.Entity.Concrete.Writer
+@{
+    ViewData["Title"] = "WriterUpdateProfile";
+    Layout = "~/Views/Shared/_WriterLayout.cshtml";
+}
+
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Yazar Profil Bilgileri Düzenleme</h4>
+            
+        <form class="forms-sample" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                @Html.HiddenFor(x=>x.WriterID)
+                <label for="exampleInputName1">Yazar Ad Soyad</label>
+                @Html.TextBoxFor(x => x.WriterName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.WriterName, "", new { @class = "text-danger" })
+
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail3">Mail Adresi</label>
+                @Html.TextBoxFor(x => x.WriterMail, new { @class = "form-control", @readonly = "true" })
+                @Html.ValidationMessageFor(x => x.WriterMail, "", new { @class = "text-danger" })
+
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword4">Şifre</label>
+                @Html.PasswordFor(x => x.WriterPassword, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.WriterPassword, "", new { @class = "text-danger" })
+
+
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword4">Şifre Tekrar</label>
+                @Html.PasswordFor(x => x.WriterPasswordConfirm, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.WriterPasswordConfirm, "", new { @class = "text-danger" })
+
+
+            </div>
+            @*<div class="form-group">
+            <label for="exampleSelectGender">Gender</label>
+            <select class="form-control" id="exampleSelectGender">
+                <option>Male</option>
+                <option>Female</option>
+            </select>
+        </div>*@
+            <div class="form-group">
+                <label>Yazar Görsel</label>               
+                    <input type="file" name="imageFile" class="form-control-file"> 
+            </div>
+
+            <div class="form-group">
+                <label for="exampleTextarea1">Yazar Hakkında</label>
+                @Html.TextAreaFor(x => x.WriterAbout, 10, 3, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.WriterAbout, "", new { @class = "text-danger" })
+
+            </div>
+            <button type="submit" class="btn btn-gradient-primary mr-2">Güncelle</button>
+            <button class="btn btn-light">İptal</button>
+        </form>
+        </div>
+    </div>
+</div>
+
