@@ -25,7 +25,7 @@ namespace BlogProject.Areas.Admin.Controllers
 
         public IActionResult Index(int page=1)
         {
-            var values = _categoryService.GetAll().ToPagedList(page,3);
+            var values = _categoryService.GetAll().ToPagedList(page,3);          
             return View(values);
         }
         public IActionResult UpdateCategoryStatus(int id)

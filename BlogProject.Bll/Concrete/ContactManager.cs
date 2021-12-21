@@ -30,7 +30,7 @@ namespace BlogProject.Bll.Concrete
 
         public List<Contact> GetAll()
         {
-            throw new NotImplementedException();
+            return _contactDal.GetAll();
         }
 
         public Contact GetById(int id)

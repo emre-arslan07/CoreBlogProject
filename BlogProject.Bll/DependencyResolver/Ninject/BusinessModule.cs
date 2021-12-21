@@ -44,6 +44,9 @@ namespace BlogProject.Bll.DependencyResolver.Ninject
 
             Bind<IMessage2Service>().To<Message2Manager>().InSingletonScope();
             Bind<IMessage2Dal>().To<EFMessage2Dal>().InSingletonScope();
+
+            Bind<IAdminService>().To<AdminManager>().InSingletonScope();
+            Bind<IAdminDal>().To<EFAdminDal>().InSingletonScope();
         }
     }
 }

@@ -20,6 +20,7 @@ namespace BlogProject.Bll.Abstract
 
         List<Blog> GetLast3Blog();
         List<Blog> GetLast10Blog();
+        Blog GetLastBlog();
 
         List<Blog> GetBlogListWithCategoryByWriter(int id);
 

@@ -78,6 +78,11 @@ namespace BlogProject.Bll.Concrete
             return _blogDal.GetAll().TakeLast(3).ToList();
         }
 
+        public Blog GetLastBlog()
+        {
+            return _blogDal.GetAll().OrderByDescending(x => x.BlogID).Take(1).FirstOrDefault();
+        }
+
         public int GetWriterIdByBlogId(int id)
         {
             return _blogDal.Get(x => x.BlogID == id).WriterID;

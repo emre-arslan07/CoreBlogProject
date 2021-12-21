@@ -4,14 +4,16 @@ using BlogProject.Dal.Concrete;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlogProject.Dal.Migrations
 {
     [DbContext(typeof(BlogProjectDbContext))]
-    partial class BlogProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211221143322_mig_admintable_mig")]
+    partial class mig_admintable_mig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
