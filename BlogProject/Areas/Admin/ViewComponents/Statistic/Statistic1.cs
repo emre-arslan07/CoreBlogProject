@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace BlogProject.Areas.Admin.ViewComponents.Statistic
 {
@@ -26,6 +27,11 @@ namespace BlogProject.Areas.Admin.ViewComponents.Statistic
             ViewBag.BlogCount = _blogService.GetAll().Count();
             ViewBag.ContactCount = _contactService.GetAll().Count();
             ViewBag.CommentCount = _commentService.GetAll().Count();
+
+            string api = "f5854a2efcca28d6991fbb05d14f25a3";
+            string conn = "https://api.openweathermap.org/data/2.5/weather?q=Istanbul&mode=xml&units=metric&lang=tr&appid=" + api;
+            XDocument document = XDocument.Load(conn);
+            ViewBag.Temperature = document.Descendants("temperature").ElementAt(0).Attribute("value").Value;
             return View();
         }
     }
