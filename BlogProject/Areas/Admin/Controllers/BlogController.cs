@@ -1,4 +1,6 @@
 ﻿using BlogProject.Areas.Admin.Models;
+using BlogProject.Bll.Abstract;
+using BlogProject.Bll.DependencyResolver.Ninject;
 using BlogProject.Dal.Concrete;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +16,13 @@ namespace BlogProject.Areas.Admin.Controllers
     [Area("Admin")]
     public class BlogController : Controller
     {
+        private IBlogService _blogService;
+
+        public BlogController()
+        {
+            _blogService = InstanceFactory.GetInstance<IBlogService>();
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -44,19 +53,17 @@ namespace BlogProject.Areas.Admin.Controllers
                 }
             }
         }
-        //todo:mimari içine alınacak
         public List<BlogModel> GetBlogTitleList()
         {
             List<BlogModel> blogModels = new List<BlogModel>();
-            using (var c = new BlogProjectDbContext())
-            {
-                blogModels = c.Blogs.Select(x => new BlogModel
+           
+                blogModels = _blogService.GetAll().Select(x => new BlogModel
                 {
                     BlogID = x.BlogID,
                     BlogTitle = x.BlogTitle
                 }).ToList();
                 return blogModels;
-            }
+           
         }
         public IActionResult BlogTitleListExcel()
         {

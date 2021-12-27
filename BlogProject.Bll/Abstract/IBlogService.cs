@@ -27,5 +27,6 @@ namespace BlogProject.Bll.Abstract
         int GetCountAllBlogs();
         int GetCountByWriterID(int id);
 
+
     }
 }

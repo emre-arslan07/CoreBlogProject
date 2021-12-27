@@ -37,7 +37,6 @@ namespace BlogProject.Bll.Concrete
         {
             return _blogDal.GetBlogListWithCategory();
         }
-    
         public List<Blog> GetBlogListByWriter(int id)
         {
             return _blogDal.GetAll(x => x.WriterID == id);
