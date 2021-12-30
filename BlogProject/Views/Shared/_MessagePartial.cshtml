@@ -1,0 +1,26 @@
+﻿@{
+    Layout = null;
+}
+@*@model BlogProject.Models.MessageModel*@
+@{
+    var mess = ViewBag.Message;
+}
+@if (mess == true)
+{
+    <div id="success" class="alert alert-success">
+        Ekleme işlemi başarılı
+    </div>
+}
+else if (mess == null)
+{
+    <div>
+    </div>
+}
+else
+{
+    <div id="danger" class="alert alert-danger">
+        Ekleme işlemi başarısız
+    </div>
+}
+
+

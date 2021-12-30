@@ -2,6 +2,7 @@
 using BlogProject.Bll.DependencyResolver.Ninject;
 using BlogProject.Bll.ValidationRules;
 using BlogProject.Entity.Concrete;
+using BlogProject.Models;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,6 @@ using System.Threading.Tasks;
 
 namespace BlogProject.Controllers
 {
-    [AllowAnonymous]
     public class BlogController : Controller
     {
         private IBlogService _blogService;
@@ -50,28 +50,30 @@ namespace BlogProject.Controllers
         [HttpGet]
         public IActionResult BlogAdd()
         {
-            List<SelectListItem> categoryValues = (from x in _categoryService.GetAll()
-                                                   select new SelectListItem
-                                                   {
-                                                       Text = x.CategoryName,
-                                                       Value = x.CategoryID.ToString()
-                                                   }).ToList();
-            ViewBag.cat = categoryValues;
+            GetCategories();
             return View();
         }
 
+        //[ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult BlogAdd(Blog blog)
         {
+            ViewBag.Message = null;
             BlogValidator blogValidator = new BlogValidator();
             ValidationResult validationResult = blogValidator.Validate(blog);
+            //MessageModel message = new MessageModel();
             if (validationResult.IsValid)
-            {
+            {              
                 blog.BlogStatus = true;
                 blog.BlogCreateDate = DateTime.Parse(DateTime.Now.ToString());
                 blog.WriterID = _writerService.GetWriterIdByMail(User.Identity.Name); 
                 _blogService.Add(blog);
-                return RedirectToAction("BlogListByWriter", "Blog");
+                ViewBag.Message = true;
+                //message.Message = blog.BlogTitle + " Ekleme İşlemi Başarılı";
+                //message.Status = true;
+                //return View("_MessagePartial", message);
+                //return RedirectToAction("BlogListByWriter", "Blog");
+
             }
             else
             {
@@ -79,15 +81,31 @@ namespace BlogProject.Controllers
                 {
                     ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
                 }
+                //message.Message = blog.BlogTitle + " Ekleme İşlemi Başarısız";
+                //message.Status = false;
+                ViewBag.Message = false;
             }
+            GetCategories();
+            //ViewBag.message = message;
             return View();
         }
-         
+
+        public void GetCategories()
+        {
+            List<SelectListItem> categoryValues = (from x in _categoryService.GetAll()
+                                                   select new SelectListItem
+                                                   {
+                                                       Text = x.CategoryName,
+                                                       Value = x.CategoryID.ToString()
+                                                   }).ToList();
+            ViewBag.cat = categoryValues;
+        }
+
         public IActionResult DeleteBlog(int id)
         {
             var blogValaue = _blogService.GetById(id);
             _blogService.Delete(blogValaue);
-            Thread.Sleep(3000);
+            Thread.Sleep(1000);
             return RedirectToAction("BlogListByWriter", "Blog");
         }
 

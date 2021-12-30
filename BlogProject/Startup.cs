@@ -43,6 +43,10 @@ namespace BlogProject
 
             });
 
+            services.AddMvc().AddFluentValidation(fv =>
+            {
+                fv.DisableDataAnnotationsValidation = true;
+            });
 
             services.AddMvc();
             services.AddAuthentication(
