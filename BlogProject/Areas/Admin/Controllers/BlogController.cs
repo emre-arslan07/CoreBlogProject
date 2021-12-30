@@ -53,6 +53,7 @@ namespace BlogProject.Areas.Admin.Controllers
                 }
             }
         }
+        //
         public List<BlogModel> GetBlogTitleList()
         {
             List<BlogModel> blogModels = new List<BlogModel>();
