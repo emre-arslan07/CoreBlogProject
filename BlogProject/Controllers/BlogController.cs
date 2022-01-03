@@ -42,10 +42,15 @@ namespace BlogProject.Controllers
         }
 
         public IActionResult BlogListByWriter()
+        {         
+            return View(GetList());
+        }
+        public List<Blog> GetList()
         {
             var WriterId = _writerService.GetWriterIdByMail(User.Identity.Name);
             var values = _blogService.GetBlogListWithCategoryByWriter(WriterId);
-            return View(values);
+            return values;
+           
         }
         [HttpGet]
         public IActionResult BlogAdd()
@@ -100,15 +105,30 @@ namespace BlogProject.Controllers
                                                    }).ToList();
             ViewBag.cat = categoryValues;
         }
-
+        [HttpPost]
         public IActionResult DeleteBlog(int id)
         {
             var blogValaue = _blogService.GetById(id);
             _blogService.Delete(blogValaue);
-            Thread.Sleep(1000);
-            return RedirectToAction("BlogListByWriter", "Blog");
+            //Thread.Sleep(1000);
+            //DeleteBlog();
+            return RedirectToAction("BlogListByWriter","Blog");
         }
-
+        //[HttpPost]
+        //public bool DeleteBlog(int id)
+        //{
+        //    var blogValaue = _blogService.GetById(id);
+        //    if (blogValaue == null)
+        //    {
+        //        return false;
+        //    }
+        //    else
+        //    {
+        //        _blogService.Delete(blogValaue);
+        //        Thread.Sleep(1000);
+        //        return true;
+        //    }
+        //}
         [HttpGet]
         public IActionResult UpdateBlog(int id)
         {
