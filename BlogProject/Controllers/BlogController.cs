@@ -154,5 +154,21 @@ namespace BlogProject.Controllers
             return RedirectToAction("BlogListByWriter", "Blog");
             
         }
+        [HttpPost]
+        public IActionResult UpdateBlogStatus(int id)
+        {
+            var value = _blogService.GetById(id);
+            if (value.BlogStatus==true)
+            {
+                value.BlogStatus = false;
+                _blogService.Update(value);
+            }
+            else
+            {
+                value.BlogStatus = true;
+                _blogService.Update(value);
+            }
+            return RedirectToAction("BlogListByWriter","Blog");
+        }
     }
 }
