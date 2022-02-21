@@ -7,9 +7,12 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,10 +31,20 @@ namespace BlogProject.Controllers
             _writerService = InstanceFactory.GetInstance<IWriterService>();
         }
 
-        public IActionResult Index()
+        //public IActionResult Index()
+        //{
+        //    var blogValues = _blogService.GetAllBlogByCategory();
+        //    return View(blogValues);
+        //}
+
+        //veriler api üzerinden çekildi
+        public async Task<IActionResult> Index()
         {
-            var blogValues = _blogService.GetAllBlogByCategory();
-            return View(blogValues);
+            var httpClient = new HttpClient();
+            var responseMessage = await httpClient.GetAsync("http://localhost:46998/api/Blog/GetAllBlogsByCategory");
+            var jsonString = await responseMessage.Content.ReadAsStringAsync();
+            var values = JsonConvert.DeserializeObject<List<Blog>>(jsonString);
+            return View(values);
         }
 
         public IActionResult BlogDetails(int id)
@@ -58,27 +71,30 @@ namespace BlogProject.Controllers
             GetCategories();
             return View();
         }
-
-        //[ValidateAntiForgeryToken]
+        // ekleme işlemi api aracılığıyla yapıldı
         [HttpPost]
-        public IActionResult BlogAdd(Blog blog)
+        public async Task<IActionResult> BlogAdd(Blog blog)
         {
             ViewBag.Message = null;
             BlogValidator blogValidator = new BlogValidator();
             ValidationResult validationResult = blogValidator.Validate(blog);
             //MessageModel message = new MessageModel();
             if (validationResult.IsValid)
-            {              
+            {
                 blog.BlogStatus = true;
                 blog.BlogCreateDate = DateTime.Parse(DateTime.Now.ToString());
-                blog.WriterID = _writerService.GetWriterIdByMail(User.Identity.Name); 
-                _blogService.Add(blog);
-                ViewBag.Message = true;
-                //message.Message = blog.BlogTitle + " Ekleme İşlemi Başarılı";
-                //message.Status = true;
-                //return View("_MessagePartial", message);
-                //return RedirectToAction("BlogListByWriter", "Blog");
+                blog.WriterID = _writerService.GetWriterIdByMail(User.Identity.Name);
 
+                var httpClient = new HttpClient();
+                var jsonBlog = JsonConvert.SerializeObject(blog);
+                StringContent content = new StringContent(jsonBlog, Encoding.UTF8, "application/json");
+                var responseMessage = await httpClient.PostAsync("http://localhost:46998/api/Blog/BlogAdd",
+content);
+                if (responseMessage.IsSuccessStatusCode)
+                {
+
+                    ViewBag.Message = true;
+                }                             
             }
             else
             {
@@ -94,6 +110,42 @@ namespace BlogProject.Controllers
             //ViewBag.message = message;
             return View();
         }
+
+        //[ValidateAntiForgeryToken]
+        //[HttpPost]
+        //public IActionResult BlogAdd(Blog blog)
+        //{
+        //    ViewBag.Message = null;
+        //    BlogValidator blogValidator = new BlogValidator();
+        //    ValidationResult validationResult = blogValidator.Validate(blog);
+        //    //MessageModel message = new MessageModel();
+        //    if (validationResult.IsValid)
+        //    {              
+        //        blog.BlogStatus = true;
+        //        blog.BlogCreateDate = DateTime.Parse(DateTime.Now.ToString());
+        //        blog.WriterID = _writerService.GetWriterIdByMail(User.Identity.Name); 
+        //        _blogService.Add(blog);
+        //        ViewBag.Message = true;
+        //        //message.Message = blog.BlogTitle + " Ekleme İşlemi Başarılı";
+        //        //message.Status = true;
+        //        //return View("_MessagePartial", message);
+        //        //return RedirectToAction("BlogListByWriter", "Blog");
+
+        //    }
+        //    else
+        //    {
+        //        foreach (var item in validationResult.Errors)
+        //        {
+        //            ModelState.AddModelError(item.PropertyName, item.ErrorMessage);
+        //        }
+        //        //message.Message = blog.BlogTitle + " Ekleme İşlemi Başarısız";
+        //        //message.Status = false;
+        //        ViewBag.Message = false;
+        //    }
+        //    GetCategories();
+        //    //ViewBag.message = message;
+        //    return View();
+        //}
 
         public void GetCategories()
         {

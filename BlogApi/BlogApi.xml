@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BlogApi</name>
+    </assembly>
+    <members>
+        <member name="M:BlogApi.Controllers.BlogController.BlogList">
+            <summary>
+            GetAllBlogs
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BlogApi.Controllers.BlogController.GetAllBlogsByCategory">
+            <summary>
+            GetAllBlogsByCategoryWriter
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BlogApi.Controllers.BlogController.BlogAdd(BlogProject.Entity.Concrete.Blog)">
+            <summary>
+            Add new Blog
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

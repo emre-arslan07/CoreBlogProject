@@ -15,7 +15,7 @@ namespace BlogProject.Dal.Concrete.EntityFramework
         {
             using (var context = new BlogProjectDbContext())
             {
-                return context.Blogs.Include(x => x.Category).ToList();
+                return context.Blogs.Include(x => x.Category).Include(x=>x.Writer).ToList();
             }
         }
 
