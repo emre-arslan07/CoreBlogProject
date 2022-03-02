@@ -65,5 +65,27 @@ namespace BlogApi.Controllers
             _blogService.Add(blog);
             return Ok();
         }
+
+        [HttpDelete("DeleteBlog/{id}")]
+        public IActionResult DeleteBlog(int id)
+        {
+            var deletedValue = _blogService.GetById(id);
+            if (deletedValue == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                _blogService.Delete(deletedValue);
+                return Ok();
+            }
+        }
+
+        [HttpPut("UpdateBlog")]
+        public IActionResult UpdateBlog(Blog blog)
+        {
+            _blogService.Update(blog);
+            return Ok();
+        }
     }
 }

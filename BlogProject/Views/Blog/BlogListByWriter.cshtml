@@ -33,12 +33,12 @@
             }
 
             <td><a @*href="/Blog/DeleteBlog/@item.BlogID"*@ data-id="@item.BlogID" class="btn btn-danger Delete">Sil</a></td>
-            <td><a href="/Blog/UpdateBlog/@item.BlogID" class="btn btn-warning">Güncelle</a></td>
+            <td><a href="/Blog/UpdateBlogg/@item.BlogID" class="btn btn-warning">Güncelle</a></td>
 
         </tr>
     }
 </table>
-<a href="/Blog/BlogAdd" class="btn btn-primary">Yeni Blog Oluştur</a>
+<a href="/Blog/BlogAddd" class="btn btn-primary">Yeni Blog Oluştur</a>
 @*@section scripts{*@
 <script>
     //const { table } = require("node:console");

@@ -66,14 +66,14 @@ namespace BlogProject.Controllers
            
         }
         [HttpGet]
-        public IActionResult BlogAdd()
+        public IActionResult BlogAddd()
         {
             GetCategories();
             return View();
         }
-        // ekleme işlemi api aracılığıyla yapıldı
+        //        // ekleme işlemi api aracılığıyla yapıldı
         [HttpPost]
-        public async Task<IActionResult> BlogAdd(Blog blog)
+        public async Task<IActionResult> BlogAddd(Blog blog)
         {
             ViewBag.Message = null;
             BlogValidator blogValidator = new BlogValidator();
@@ -94,7 +94,8 @@ content);
                 {
 
                     ViewBag.Message = true;
-                }                             
+                    //return RedirectToAction("BlogListByWriter", "Blog");
+                }
             }
             else
             {
@@ -113,17 +114,17 @@ content);
 
         //[ValidateAntiForgeryToken]
         //[HttpPost]
-        //public IActionResult BlogAdd(Blog blog)
+        //public IActionResult BlogAddd(Blog blog)
         //{
         //    ViewBag.Message = null;
         //    BlogValidator blogValidator = new BlogValidator();
         //    ValidationResult validationResult = blogValidator.Validate(blog);
         //    //MessageModel message = new MessageModel();
         //    if (validationResult.IsValid)
-        //    {              
+        //    {
         //        blog.BlogStatus = true;
         //        blog.BlogCreateDate = DateTime.Parse(DateTime.Now.ToString());
-        //        blog.WriterID = _writerService.GetWriterIdByMail(User.Identity.Name); 
+        //        blog.WriterID = _writerService.GetWriterIdByMail(User.Identity.Name);
         //        _blogService.Add(blog);
         //        ViewBag.Message = true;
         //        //message.Message = blog.BlogTitle + " Ekleme İşlemi Başarılı";
@@ -157,15 +158,28 @@ content);
                                                    }).ToList();
             ViewBag.cat = categoryValues;
         }
+
         [HttpPost]
-        public IActionResult DeleteBlog(int id)
+        public async Task<IActionResult> DeleteBlog(int id)
         {
-            var blogValaue = _blogService.GetById(id);
-            _blogService.Delete(blogValaue);
-            //Thread.Sleep(1000);
-            //DeleteBlog();
-            return RedirectToAction("BlogListByWriter","Blog");
+            var httpClient = new HttpClient();
+            var responseMessage = await httpClient.DeleteAsync("http://localhost:46998/api/Blog/DeleteBlog/"+id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                Thread.Sleep(1000);
+                return RedirectToAction("BlogListByWriter", "Blog");
+            }
+            return View();
         }
+        //[HttpPost]
+        //public IActionResult DeleteBlog(int id)
+        //{
+        //    var blogValaue = _blogService.GetById(id);
+        //    _blogService.Delete(blogValaue);
+        //    //Thread.Sleep(1000);
+        //    //DeleteBlog();
+        //    return RedirectToAction("BlogListByWriter","Blog");
+        //}
         //[HttpPost]
         //public bool DeleteBlog(int id)
         //{
@@ -181,10 +195,22 @@ content);
         //        return true;
         //    }
         //}
+        //[HttpGet]
+        //public IActionResult UpdateBlog(int id)
+        //{
+        //    var blogValue = _blogService.GetById(id);
+        //    List<SelectListItem> categoryValues = (from x in _categoryService.GetAll()
+        //                                           select new SelectListItem
+        //                                           {
+        //                                               Text = x.CategoryName,
+        //                                               Value = x.CategoryID.ToString()
+        //                                           }).ToList();
+        //    ViewBag.cat = categoryValues;
+        //    return View(blogValue);
+        //}
         [HttpGet]
-        public IActionResult UpdateBlog(int id)
+        public async Task<IActionResult> UpdateBlogg(int id)
         {
-            var blogValue = _blogService.GetById(id);
             List<SelectListItem> categoryValues = (from x in _categoryService.GetAll()
                                                    select new SelectListItem
                                                    {
@@ -192,20 +218,45 @@ content);
                                                        Value = x.CategoryID.ToString()
                                                    }).ToList();
             ViewBag.cat = categoryValues;
-            return View(blogValue);
+            var httpClient = new HttpClient();
+            var responseMessage = await httpClient.GetAsync("http://localhost:46998/api/Blog/"+id);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var jsonBlog = await responseMessage.Content.ReadAsStringAsync();
+                var blogValue = JsonConvert.DeserializeObject<Blog>(jsonBlog);
+                return View(blogValue);
+
+            }
+            
+            return RedirectToAction("BlogListByWriter", "Blog");
         }
-
         [HttpPost]
-        public IActionResult UpdateBlog(Blog blog)
+        public async Task<IActionResult> UpdateBlogg(Blog blog)
         {
-
-            blog.WriterID = _writerService.GetWriterIdByMail(User.Identity.Name); 
+            blog.WriterID = _writerService.GetWriterIdByMail(User.Identity.Name);
             blog.BlogCreateDate = DateTime.Parse(DateTime.Now.ToShortDateString());
             blog.BlogStatus = true;
-            _blogService.Update(blog);
-            return RedirectToAction("BlogListByWriter", "Blog");
-            
+            var httpClient = new HttpClient();
+            var jsonBlog = JsonConvert.SerializeObject(blog);
+            var content = new StringContent(jsonBlog, Encoding.UTF8, "application/json");
+            var responseMessage = await httpClient.PutAsync("http://localhost:46998/api/Blog/UpdateBlog",content);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction("BlogListByWriter", "Blog");
+            }
+            return View(blog);
         }
+        //[HttpPost]
+        //public IActionResult UpdateBlog(Blog blog)
+        //{
+
+        //    blog.WriterID = _writerService.GetWriterIdByMail(User.Identity.Name); 
+        //    blog.BlogCreateDate = DateTime.Parse(DateTime.Now.ToShortDateString());
+        //    blog.BlogStatus = true;
+        //    _blogService.Update(blog);
+        //    return RedirectToAction("BlogListByWriter", "Blog");
+            
+        //}
         [HttpPost]
         public IActionResult UpdateBlogStatus(int id)
         {
