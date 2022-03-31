@@ -1,9 +1,11 @@
 ﻿using BlogProject.Bll.Abstract;
 using BlogProject.Bll.DependencyResolver.Ninject;
 using BlogProject.Entity.Concrete;
+using BlogProject.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,43 +15,70 @@ using System.Threading.Tasks;
 
 namespace BlogProject.Controllers
 {
+    [AllowAnonymous]
+
     public class LoginController : Controller
     {
-        private IWriterService _writerService;
+        //private IWriterService _writerService;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public LoginController()
+        public LoginController(SignInManager<AppUser> signInManager)
         {
-            _writerService = InstanceFactory.GetInstance<IWriterService>();
+            _signInManager = signInManager;
         }
 
-        [AllowAnonymous]
+        //public LoginController()
+        //{
+        //    //_writerService = InstanceFactory.GetInstance<IWriterService>();
+        //}
+
         public IActionResult Index()
         {
             return View();
         }
-        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Index(Writer writer)
+        public async Task<IActionResult> Index(/*Writer writer*/ UserSignInViewModel p)
         {
-            var dataValue = _writerService.GetByMailPassword(writer);
-            if (dataValue != null)
+            if (ModelState.IsValid)
             {
-                //HttpContext.Session.SetString("username", writer.WriterMail);
-                //return RedirectToAction("Index","Writer");
-
-                var claims = new List<Claim>
+                var result = await _signInManager.PasswordSignInAsync(p.UserName, p.Password, false, true);
+                if (result.Succeeded)
                 {
-                    new Claim(ClaimTypes.Name,writer.WriterMail)
-                };
-                var userIdentity = new ClaimsIdentity(claims, "a");
-                ClaimsPrincipal principal = new ClaimsPrincipal(userIdentity);
-                await HttpContext.SignInAsync(principal);
-                return RedirectToAction("Index", "Dashboard");
+                    return RedirectToAction("Index", "Dashboard");
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Login");
+                }
             }
-            else
-            {
-                return View();
-            }
+            return View();
+            //var dataValue = _writerService.GetByMailPassword(writer);
+            //if (dataValue != null)
+            //{
+            //    //HttpContext.Session.SetString("username", writer.WriterMail);
+            //    //return RedirectToAction("Index","Writer");
+
+            //    var claims = new List<Claim>
+            //    {
+            //        new Claim(ClaimTypes.Name,writer.WriterMail)
+            //    };
+            //    var userIdentity = new ClaimsIdentity(claims, "a");
+            //    ClaimsPrincipal principal = new ClaimsPrincipal(userIdentity);
+            //    await HttpContext.SignInAsync(principal);
+            //    return RedirectToAction("Index", "Dashboard");
+            //}
+            //else
+            //{
+            //    return View();
+            //}
+        }
+
+        public async Task<IActionResult> LogOut()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Login");
         }
     }
+
+
 }

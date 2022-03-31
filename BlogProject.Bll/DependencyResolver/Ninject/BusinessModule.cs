@@ -47,6 +47,9 @@ namespace BlogProject.Bll.DependencyResolver.Ninject
 
             Bind<IAdminService>().To<AdminManager>().InSingletonScope();
             Bind<IAdminDal>().To<EFAdminDal>().InSingletonScope();
+
+            Bind<IUserService>().To<UserManager>().InSingletonScope();
+            Bind<IUserDal>().To<EFAppUserDal>().InSingletonScope();
         }
     }
 }

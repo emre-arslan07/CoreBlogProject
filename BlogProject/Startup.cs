@@ -1,3 +1,5 @@
+using BlogProject.Dal.Concrete;
+using BlogProject.Entity.Concrete;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -31,6 +33,14 @@ namespace BlogProject
 
             //session active
             //services.AddSession();
+
+            services.AddDbContext<BlogProjectDbContext>();
+            services.AddIdentity<AppUser, AppRole>(x=>
+            {
+                x.Password.RequireUppercase = false;
+                x.Password.RequireNonAlphanumeric = false;
+            }).AddEntityFrameworkStores<BlogProjectDbContext>();
+            services.AddControllersWithViews();
 
             // authorization proje seviyesine alýnýr
             services.AddMvc(config =>

@@ -1,6 +1,7 @@
 ﻿using BlogProject.Bll.Abstract;
 using BlogProject.Bll.DependencyResolver.Ninject;
 using BlogProject.Bll.ValidationRules;
+using BlogProject.Dal.Concrete;
 using BlogProject.Entity.Concrete;
 using BlogProject.Models;
 using FluentValidation.Results;
@@ -18,10 +19,12 @@ namespace BlogProject.Controllers
     public class WriterController : Controller
     {
         private IWriterService _writerService;
+        private IUserService _userService;
 
         public WriterController()
         {
             _writerService = InstanceFactory.GetInstance<IWriterService>();
+            _userService = InstanceFactory.GetInstance<IUserService>();
         }
         [Authorize]
         public IActionResult Index()
@@ -43,12 +46,17 @@ namespace BlogProject.Controllers
         {
             return PartialView();
         }
-
+        //BlogProjectDbContext db = new BlogProjectDbContext();
         [HttpGet]
         public IActionResult WriterUpdateProfile()
         {
-            var writerId = _writerService.GetWriterIdByMail(User.Identity.Name);
-            var writerValues = _writerService.GetById(writerId);
+            var username = User.Identity.Name;
+            var usermail = _userService.GetWriterMailByUsername(username);
+            var writerId = _userService.GetWriterIdByMail(usermail);
+            var writerValues = _userService.GetById(writerId);
+            //var userMail = db.Users.Where(x => x.UserName == username).Select(x => x.Email).FirstOrDefault();
+            //var writerId = _writerService.GetWriterIdByMail(/*User.Identity.Name*/ userMail);
+            //var writerValues = _writerService.GetById(writerId);
             return View(writerValues);
         }
 

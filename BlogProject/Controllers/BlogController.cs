@@ -38,6 +38,7 @@ namespace BlogProject.Controllers
         //}
 
         //veriler api üzerinden çekildi
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var httpClient = new HttpClient();
@@ -46,7 +47,7 @@ namespace BlogProject.Controllers
             var values = JsonConvert.DeserializeObject<List<Blog>>(jsonString);
             return View(values);
         }
-
+        [AllowAnonymous]
         public IActionResult BlogDetails(int id)
         {
             ViewBag.blogId = id;

@@ -1,6 +1,7 @@
 ﻿using BlogProject.Bll.Abstract;
 using BlogProject.Bll.DependencyResolver.Ninject;
 using BlogProject.Entity.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace BlogProject.Controllers
 {
+    [AllowAnonymous]
     public class NewsLetterController : Controller
     {
         private INewsLetterService _newsLetterService;
